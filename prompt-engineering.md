@@ -1,3 +1,6 @@
+## functions for assistant
+https://docs.vapi.ai/examples/pizza-website
+
 ## prompts to add structure
 
 [Role]
