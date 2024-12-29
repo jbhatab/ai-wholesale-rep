@@ -4,7 +4,7 @@ import ActiveCallDetail from "./components/ActiveCallDetail";
 import Button from "./components/base/Button";
 import Vapi from "@vapi-ai/web";
 
-const vapi = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY || "");
+const vapi = new Vapi(process.env.PUBLIC_VAPI_KEY || "");
 
 const App = () => {
   const [connecting, setConnecting] = useState(false);
