@@ -4,7 +4,7 @@
 
 ### Add Your Vapi Public Key
 
-Open `src/App.jsx` and replace the placeholder public key with your own:
+Open `.env` and add REACT_APP_VAPI_PUBLIC_KEY=xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
 
 ### Start
 
