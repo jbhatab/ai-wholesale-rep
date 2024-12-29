@@ -6,7 +6,7 @@ import Vapi from "@vapi-ai/web";
 import { isPublicKeyMissingError } from "./utils";
 
 // Put your Vapi Public Key below.
-const vapi = new Vapi("0000XXXX-XXXX-XXXX-XXXX-XXXXXXXX0000");
+const vapi = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY || "");
 
 const App = () => {
   const [connecting, setConnecting] = useState(false);
@@ -70,44 +70,81 @@ const App = () => {
   return (
     <div
       style={{
-        display: "flex",
-        width: "100vw",
-        height: "100vh",
-        justifyContent: "center",
+        maxWidth: 1200,
+        margin: "0 auto",
+        width: "100%",
+        display: "block",
         alignItems: "center",
+        justifyContent: "center",
+        padding: "0 16px",
+        boxSizing: "border-box",
       }}
     >
-      {!connected ? (
-        <Button
-          label="Call Vapi’s Pizza Front Desk"
-          onClick={startCallInline}
-          isLoading={connecting}
-        />
-      ) : (
-        <ActiveCallDetail
-          assistantIsSpeaking={assistantIsSpeaking}
-          volumeLevel={volumeLevel}
-          onEndCallClick={endCall}
-        />
-      )}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "100vw",
+            height: "50vh",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <img 
+            src="bob.png" alt="Bob"
+            style={{
+              display: "flex",
+              width: 400,
+              marginBottom: 20,
+            }}
+          />
+          {!connected ? (
+            <Button
+              label="Place an order "
+              onClick={startCallInline}
+              isLoading={connecting}
+            />
+          ) : (
+            <ActiveCallDetail
+              assistantIsSpeaking={assistantIsSpeaking}
+              volumeLevel={volumeLevel}
+              onEndCallClick={endCall}
+            />
+          )} 
 
-      {showPublicKeyInvalidMessage ? <PleaseSetYourPublicKeyMessage /> : null}
-      <ReturnToDocsLink />
+          {showPublicKeyInvalidMessage ? <PleaseSetYourPublicKeyMessage /> : null}
+        </div>
+        <iframe
+          id="distru-product-menu-iframe-id"
+          src="https://app.distru.com/companies/1/menu/3051"
+          scrolling="no"
+          style={{border: "none", minHeight: 1000, overflow: "hidden",}}
+          width="100%"
+        ></iframe>
+      </div>
     </div>
   );
 };
 
 const assistantOptions = {
-  name: "Vapi’s Pizza Front Desk",
-  firstMessage: "Vappy’s Pizzeria speaking, how can I help you?",
+  name: "Bob",
+  firstMessage: "Hello! Can I take your order?",
   transcriber: {
     provider: "deepgram",
     model: "nova-2",
     language: "en-US",
   },
   voice: {
-    provider: "playht",
-    voiceId: "jennifer",
+    provider: "cartesia",
+    voiceId: "565510e8-6b45-45de-8758-13588fbaec73",
   },
   model: {
     provider: "openai",
@@ -115,26 +152,31 @@ const assistantOptions = {
     messages: [
       {
         role: "system",
-        content: `You are a voice assistant for Vappy’s Pizzeria, a pizza shop located on the Internet.
+        content: `You are Bob, a voice assistant for a wholsale Cannabis company that sells directly to dispensaries.
 
-Your job is to take the order of customers calling in. The menu has only 3 types
-of items: pizza, sides, and drinks. There are no other types of items on the menu.
+Your job is to take the order of wholesale customers calling in. 
 
-1) There are 3 kinds of pizza: cheese pizza, pepperoni pizza, and vegetarian pizza
-(often called "veggie" pizza).
-2) There are 3 kinds of sides: french fries, garlic bread, and chicken wings.
-3) There are 2 kinds of drinks: soda, and water. (if a customer asks for a
-brand name like "coca cola", just let them know that we only offer "soda")
+The menu consists of the following with inventory levels next to the product name in this fashion "{Product Name} - {Inventory Count} {Inventory Unit Type}":
 
-Customers can only order 1 of each item. If a customer tries to order more
-than 1 item within each category, politely inform them that only 1 item per
-category may be ordered.
+1) Crude Oil - 1908.8 grams
+2) Green Crack Trim - 1360 lbs
+3) Platinum OG Trim - 171 lbs
+4) Prerolled Joint - 597 units
+5) RAW Cone - 112 units
 
-Customers must order 1 item from at least 1 category to have a complete order.
-They can order just a pizza, or just a side, or just a drink.
 
-Be sure to introduce the menu items, don't assume that the caller knows what
-is on the menu (most appropriate at the start of the conversation).
+1) There are 3 kinds of Eighths: Green Crack, Blue Dream, and OG Kush
+2) There are 2 kinds of Vapes: Jack Herer and Blueberry Yum Yum
+3) There are 2 kinds of Edibles: Chocolate and Gummies
+
+Customers can only place an order for a sku if there is inventory available. If a customer tries to order more quanitity of a product
+than is available, politely inform them how much is available and have them update the order quantity. If the amount ordered is available, then accept that item in the order!
+
+Customers must order at least one item.
+
+Assume the customer has visual access to the menu and inventory levels. If they place an order and the item doesn't exist, try to suggest an item that best matches what you think they are suggesting.
+
+After the order is placed, repeat the order back to the customer to confirm it.
 
 If the customer goes off-topic or off-track and talks about anything but the
 process of ordering, politely steer the conversation back to collecting their order.
@@ -190,28 +232,6 @@ const PleaseSetYourPublicKeyMessage = () => {
     >
       Is your Vapi Public Key missing? (recheck your code)
     </div>
-  );
-};
-
-const ReturnToDocsLink = () => {
-  return (
-    <a
-      href="https://docs.vapi.ai"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        position: "fixed",
-        top: "25px",
-        right: "25px",
-        padding: "5px 10px",
-        color: "#fff",
-        textDecoration: "none",
-        borderRadius: "5px",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-      }}
-    >
-      return to docs
-    </a>
   );
 };
 
