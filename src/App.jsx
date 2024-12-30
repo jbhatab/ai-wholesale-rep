@@ -81,7 +81,7 @@ const App = () => {
           style={{
             display: "flex",
             width: "100vw",
-            height: "50vh",
+            height: "60vh",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
@@ -91,7 +91,7 @@ const App = () => {
             src="bob.png" alt="Bob"
             style={{
               display: "flex",
-              width: 400,
+              width: 300,
               marginBottom: 20,
             }}
           />
@@ -132,6 +132,23 @@ const assistantOptions = {
   voice: {
     provider: "cartesia",
     voiceId: "565510e8-6b45-45de-8758-13588fbaec73",
+  },
+  analysisPlan: {
+    structuredDataPlan: {
+      enabled: true,
+      schema: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            productName: { type: "string", description: "name or sku of the product being ordered"},
+            quantity: { type: "number", description: "The quantity of the product being ordered"},
+          }
+        },
+        description: "string"
+      },
+      timeoutSeconds: 1
+    }
   },
   model: {
     provider: "openai",

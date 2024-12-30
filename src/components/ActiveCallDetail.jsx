@@ -8,7 +8,7 @@ const ActiveCallDetail = ({ assistantIsSpeaking, volumeLevel, onEndCallClick }) 
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           padding: "15px",
@@ -16,7 +16,7 @@ const ActiveCallDetail = ({ assistantIsSpeaking, volumeLevel, onEndCallClick }) 
           borderRadius: "8px",
           boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
           width: "400px",
-          height: "200px",
+          height: "100px",
         }}
       >
         <AssistantSpeechIndicator isSpeaking={assistantIsSpeaking} />
