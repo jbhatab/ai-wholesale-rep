@@ -18,8 +18,8 @@ export const bob = {
         items: {
           type: "object",
           properties: {
-            productName: { type: "string", description: "name or sku of the product being ordered"},
-            quantity: { type: "number", description: "The quantity of the product being ordered"},
+            productName: { type: "string", description: "name of the product of each line item for the order"},
+            quantity: { type: "number", description: "The quantity of each line item for the order"},
           }
         },
         description: "string"
