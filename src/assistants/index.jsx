@@ -1,49 +1,67 @@
-export const bob = {
-  name: "Bob",
-  firstMessage: "Hello! Can I take your order?",
-  transcriber: {
-    provider: "deepgram",
-    model: "nova-2",
-    language: "en-US",
-  },
-  voice: {
-    provider: "cartesia",
-    voiceId: "565510e8-6b45-45de-8758-13588fbaec73",
-  },
-  analysisPlan: {
-    structuredDataPlan: {
-      enabled: true,
-      schema: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            productName: { type: "string", description: "name of the product of each line item for the order"},
-            quantity: { type: "number", description: "The quantity of each line item for the order"},
-          }
+export const getBobAssistant = async () => {
+  // Fetch menu data from make.com endpoint
+  const response = await fetch('https://hook.us2.make.com/w1ceb8xrnkg4l9my5ls7dp25fjuucemc');
+  const menuData = await response.json();
+  debugger
+  
+  // Using fetched data from make.com
+  const inventory = menuData || [
+    { name: "Crude Oil", quantity: 1908.8, unit: "grams" },
+    { name: "Green Crack Trim", quantity: 1360, unit: "lbs" },
+    { name: "Platinum OG Trim", quantity: 171, unit: "lbs" },
+    { name: "Prerolled Joint", quantity: 597, unit: "units" },
+    { name: "RAW Cone", quantity: 112, unit: "units" }
+  ];
+
+  // Generate menu text from inventory data
+  const menuText = inventory
+    .map((item, index) => `${index + 1}) ${item.name} - ${item.quantity} ${item.unit}`)
+    .join('\n');
+
+  console.log(menuText)
+
+  return {
+    name: "Bob",
+    firstMessage: "Hello! Can I take your order?",
+    transcriber: {
+      provider: "deepgram",
+      model: "nova-2",
+      language: "en-US",
+    },
+    voice: {
+      provider: "cartesia",
+      voiceId: "565510e8-6b45-45de-8758-13588fbaec73",
+    },
+    analysisPlan: {
+      structuredDataPlan: {
+        enabled: true,
+        schema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              productName: { type: "string", description: "name of the product of each line item for the order"},
+              quantity: { type: "number", description: "The quantity of each line item for the order"},
+            }
+          },
+          description: "string"
         },
-        description: "string"
-      },
-      timeoutSeconds: 1
-    }
-  },
-  model: {
-    provider: "openai",
-    model: "gpt-4",
-    messages: [
-      {
-        role: "system",
-        content: `You are Bob, a voice assistant for a wholsale Cannabis company that sells directly to dispensaries.
+        timeoutSeconds: 1
+      }
+    },
+    model: {
+      provider: "openai",
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: `You are Bob, a voice assistant for a wholsale Cannabis company that sells directly to dispensaries.
   
   Your job is to take the order of wholesale customers calling in. 
   
   The menu consists of the following with inventory levels next to the product name in this fashion "{Product Name} - {Inventory Count} {Inventory Unit Type}":
   
-  1) Crude Oil - 1908.8 grams
-  2) Green Crack Trim - 1360 lbs
-  3) Platinum OG Trim - 171 lbs
-  4) Prerolled Joint - 597 units
-  5) RAW Cone - 112 units
+  ${menuText}
   
   Customers can only place an order for a sku if there is inventory available. If a customer tries to order more quanitity of a product
   than is available, politely inform them how much is available and have them update the order quantity. If the amount ordered is available, then accept that item in the order!
@@ -73,5 +91,6 @@ export const bob = {
   - This is a voice conversation, so keep your responses short, like in a real conversation. Don't ramble for too long.`,
         },
       ],
-    },
+    }
   };
+};

@@ -4,7 +4,7 @@ import ActiveCallDetail from "./components/ActiveCallDetail";
 import Button from "./components/base/Button";
 import Vapi from "@vapi-ai/web";
 
-import { bob } from "./assistants";
+import { getBobAssistant } from "./assistants";
 
 const vapi = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY || process.env.PUBLIC_VAPI_KEY || process.env.NEXT_PUBLIC_VAPI_KEY  || "");
 
@@ -52,8 +52,11 @@ const App = () => {
   // call start handler
   const startCallInline = () => {
     setConnecting(true);
-    vapi.start(assistant);
+    getBobAssistant().then(assistant => {
+      vapi.start(assistant);
+    });
   };
+
   const endCall = () => {
     vapi.stop();
   };
