@@ -18,8 +18,6 @@ export const getBobAssistant = async () => {
     .map((item, index) => `${index + 1}) ${item.name} - ${item.quantity} ${item.unit}`)
     .join('\n');
 
-  console.log(menuText)
-
   return {
     name: "Bob",
     firstMessage: "Hello! Can I take your order?",
